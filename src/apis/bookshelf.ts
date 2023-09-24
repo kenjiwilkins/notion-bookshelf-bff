@@ -104,7 +104,6 @@ export async function getBookById(id: string) {
       auth: process.env.NOTION_API_KEY,
     });
     const response = await notion.pages.retrieve({ page_id: id });
-    console.log(response);
     return response;
   } catch (error) {
     if (error) {
