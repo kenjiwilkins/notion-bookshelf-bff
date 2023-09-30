@@ -5,7 +5,7 @@
   "main": "/dist/index.js",
   "scripts": {
     "test": "test:unit",
-    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "prestart": "npm run build"
@@ -30,6 +30,7 @@
     "@types/morgan": "^1.9.5",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   }
 }
