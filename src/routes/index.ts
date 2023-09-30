@@ -1,7 +1,11 @@
 import express from "express";
-import { getBookshelf, getBooks, getReadBookByTimeRange } from "../apis";
-import { BookReadStatus } from "../types";
-import { bookBatchHandler, bookListBatchHandler } from "@/batchs";
+import { getBookshelf, getReadBookByTimeRange } from "../apis";
+import { BookReadStatus } from "@/types";
+import {
+  bookBatchHandler,
+  bookListBatchHandler,
+  bookListStatusBatchHandler,
+} from "@/batchs";
 
 const apiRouter = express.Router();
 
@@ -11,8 +15,6 @@ apiRouter.get("/general", async (req, res) => {
 });
 
 apiRouter.get("/books/all", async (req, res) => {
-  // const data = await getBooks({ amount: 100 });
-  // res.json(data);
   bookListBatchHandler((err: Error, data: any) => {
     if (err) {
       return res.json({ error: err.message });
@@ -22,8 +24,21 @@ apiRouter.get("/books/all", async (req, res) => {
 });
 
 apiRouter.get("/books/status/:status", async (req, res) => {
-  const data = await getBooks({ status: req.params.status as BookReadStatus });
-  res.json(data);
+  if (!req.params.status) {
+    return res.status(400).json({ error: "Status is required" });
+  }
+  if (!["read", "reading", "unread"].includes(req.params.status)) {
+    return res.status(400).json({ error: "Status is invalid" });
+  }
+  bookListStatusBatchHandler(
+    req.params.status as BookReadStatus,
+    (err: Error, data: any) => {
+      if (err) {
+        return res.json({ error: err.message });
+      }
+      res.json(data);
+    }
+  );
 });
 
 apiRouter.get("/books/range", async (req, res) => {
