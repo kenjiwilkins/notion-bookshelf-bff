@@ -1,4 +1,5 @@
 import { BookshelfResponse, Book } from "../types";
+import logger from "morgan";
 
 export function formatBookshelfResponse(
   bookShelfResponse: BookshelfResponse
@@ -23,4 +24,17 @@ export function formatBookshelfResponse(
     console.log(error);
     return { error: "Error formatting bookshelf response" };
   }
+}
+
+export function formatErrorResponse(
+  error: Error,
+  message = "An error occurred",
+  statusCode = 500
+) {
+  return {
+    status: statusCode,
+    message,
+    errorName: error.name,
+    stackTrace: error.stack,
+  };
 }
