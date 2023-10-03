@@ -1,6 +1,6 @@
 {
   "name": "notion-bookshelf-bff",
-  "version": "1.0.0",
+  "version": "1.0.100",
   "description": "a backend for front end to handle APIs on notion bookshelf",
   "main": "/dist/index.js",
   "scripts": {
