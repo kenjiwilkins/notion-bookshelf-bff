@@ -1,5 +1,4 @@
 import { Client } from "@notionhq/client";
-import { request } from ".";
 import { BookReadStatus } from "../types";
 import { READ_STATUS } from "../constants";
 import moment from "moment";
