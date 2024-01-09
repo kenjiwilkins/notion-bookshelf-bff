@@ -7,7 +7,7 @@ import {
   getBlogArticleByCategory,
   getBlogTags,
 } from "@/apis";
-import { blogsBatchHandler } from "@/batchs";
+import { blogsBatchHandler, blogArticleBatchHandler } from "@/batchs";
 
 const blogApiRouter = express.Router();
 
@@ -21,15 +21,12 @@ blogApiRouter.get("/", async (req, res) => {
 });
 
 blogApiRouter.get("/article/body/:id", async (req, res) => {
-  try {
-    const response = await getBlogArticle(req.params.id);
-    return res.status(200).json(response);
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ error: "article get:" + req.params.id + "not found" });
-  }
+  blogArticleBatchHandler(req.params.id, (err: Error, data: any) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    return res.status(200).json(data);
+  });
 });
 
 blogApiRouter.get("/article/:id", async (req, res) => {
