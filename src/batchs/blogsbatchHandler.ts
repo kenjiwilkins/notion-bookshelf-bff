@@ -1,19 +1,16 @@
+import { getBlogArticles } from "@/apis";
 import moment, { Moment } from "moment";
-import { getBooks } from "@/apis";
-import { Book } from "@/types";
+import { BlogArticle } from "@/types";
 
-type BookList = Book[];
+type BlogList = BlogArticle[];
 const requestQueue: Function[] = [];
-const cache: BookList = [];
+const cache: BlogList = [];
 let lastTimeFetched: Moment = moment();
 
-export async function bookListBatchHandler(
-  callback: Function,
-  amount?: number
-) {
+export async function blogsBatchHandler(callback: Function, amount?: number) {
   if (cache.length && moment().diff(lastTimeFetched, "minutes") < 60) {
     console.log(
-      `Cache hit for book list after ${moment().diff(
+      `Cache hit for blogs list after ${moment().diff(
         lastTimeFetched,
         "minutes"
       )} minutes ${moment().diff(lastTimeFetched, "seconds")} seconds`
@@ -21,13 +18,13 @@ export async function bookListBatchHandler(
     return process.nextTick(() => callback(null, cache));
   }
   try {
-    const books = (await getBooks({ amount: amount || 100 })) as BookList;
+    const blogs = (await getBlogArticles()) as BlogList;
 
     requestQueue.push(callback);
 
-    requestQueue.forEach((cb: Function) => cb(null, books));
+    requestQueue.forEach((cb: Function) => cb(null, blogs));
 
-    cache.push(...books);
+    cache.push(...blogs);
 
     lastTimeFetched = moment();
   } catch (error) {
@@ -37,6 +34,6 @@ export async function bookListBatchHandler(
   }
 }
 
-export function updateBookListCache(book: Book) {
-  cache.push(book);
+export function updateBlogListCache(blog: BlogArticle) {
+  cache.push(blog);
 }

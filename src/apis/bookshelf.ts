@@ -111,3 +111,19 @@ export async function getBookById(id: string) {
     }
   }
 }
+
+export async function getBookBody(id: string) {
+  try {
+    const notion = new Client({
+      auth: process.env.NOTION_API_KEY,
+    });
+    const response = await notion.blocks.children.list({
+      block_id: id,
+    });
+    return response;
+  } catch (error) {
+    if (error) {
+      return error;
+    }
+  }
+}
