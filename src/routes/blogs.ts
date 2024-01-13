@@ -1,13 +1,15 @@
 import express from "express";
 import {
-  getBlogArticle,
-  getBlogArticleProperties,
   getBlogCategories,
   getBlogCategoryProperties,
   getBlogArticleByCategory,
   getBlogTags,
 } from "@/apis";
-import { blogsBatchHandler, blogArticleBatchHandler } from "@/batchs";
+import {
+  blogsBatchHandler,
+  blogArticleBatchHandler,
+  blogArticlePropertiesBatchHandler,
+} from "@/batchs";
 
 const blogApiRouter = express.Router();
 
@@ -29,16 +31,13 @@ blogApiRouter.get("/article/body/:id", async (req, res) => {
   });
 });
 
-blogApiRouter.get("/article/:id", async (req, res) => {
-  try {
-    const response = await getBlogArticleProperties(req.params.id);
-    return res.status(200).json(response);
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ error: "article get:" + req.params.id + "not found" });
-  }
+blogApiRouter.get("/article/properties/:id", async (req, res) => {
+  blogArticlePropertiesBatchHandler(req.params.id, (err: Error, data: any) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    return res.status(200).json(data);
+  });
 });
 
 blogApiRouter.get("/categories", async (req, res) => {
