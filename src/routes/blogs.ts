@@ -4,40 +4,45 @@ import {
   getBlogCategoryProperties,
   getBlogArticleByCategory,
   getBlogTags,
+  getBlogArticles,
+  getBlogArticle,
+  getBlogArticleProperties,
 } from "@/apis";
-import {
-  blogsBatchHandler,
-  blogArticleBatchHandler,
-  blogArticlePropertiesBatchHandler,
-} from "@/batchs";
 
 const blogApiRouter = express.Router();
 
 blogApiRouter.get("/", async (req, res) => {
-  blogsBatchHandler((err: Error, data: any) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    return res.status(200).json(data);
-  });
+  try {
+    const response = await getBlogArticles();
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "blogs not found" });
+  }
 });
 
 blogApiRouter.get("/article/body/:id", async (req, res) => {
-  blogArticleBatchHandler(req.params.id, (err: Error, data: any) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    return res.status(200).json(data);
-  });
+  try {
+    const response = await getBlogArticle(req.params.id);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "article get:" + req.params.id + "not found" });
+  }
 });
 
 blogApiRouter.get("/article/properties/:id", async (req, res) => {
-  blogArticlePropertiesBatchHandler(req.params.id, (err: Error, data: any) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    return res.status(200).json(data);
-  });
+  try {
+    const response = await getBlogArticleProperties(req.params.id);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "article get:" + req.params.id + "not found" });
+  }
 });
 
 blogApiRouter.get("/categories", async (req, res) => {
