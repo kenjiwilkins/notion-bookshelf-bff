@@ -5,6 +5,7 @@ import { rateLimit } from "express-rate-limit";
 import { apiRouter } from "./routes";
 import * as dotenv from "dotenv";
 import path from "path";
+import serverlessExpress from "@codegenie/serverless-express";
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const app = express();
@@ -30,3 +31,5 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+export const handler = serverlessExpress({ app });
